@@ -4,9 +4,9 @@ export default function Navbar() {
   return (
     <div
       style={{
-        position: "absolute", // Ensures the navbar is positioned relative to the viewport
-        top: 0, // Aligns the navbar to the top
-        right: 0, // Aligns the navbar to the right
+        position: "absolute",
+        top: 0,
+        right: 0,
         display: "flex",
         justifyContent: "flex-end",
         padding: 20,

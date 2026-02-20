@@ -47,11 +47,11 @@ export default function FilmsSearchPage() {
       <input
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="search by film title, actor name, or genre..."
+        placeholder="Search by film title, actor name, or genre..."
         style={{ padding: 10, width: 420 }}
       />
 
-      {loading && <p>loading...</p>}
+      {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div style={{ marginTop: 20 }}>

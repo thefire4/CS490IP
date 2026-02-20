@@ -7,7 +7,6 @@ export default function FilmsDetailsPage() {
 
   const [data, setData] = useState(null);
 
-  // rent ui
   const [customerId, setCustomerId] = useState("");
   const [rentMsg, setRentMsg] = useState("");
   const [renting, setRenting] = useState(false);
@@ -19,14 +18,13 @@ export default function FilmsDetailsPage() {
 
   useEffect(() => {
     loadFilm();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filmid]);
 
   async function rentFilm() {
     const cid = Number(customerId);
 
     if (!cid || Number.isNaN(cid)) {
-      setRentMsg("❌ enter a valid customer id");
+      setRentMsg("Please enter a valid customer id");
       return;
     }
 
@@ -46,12 +44,12 @@ export default function FilmsDetailsPage() {
         throw new Error(payload.error || `rent failed (${res.status})`);
       }
 
-      setRentMsg(`✅ rented! inventory copy: ${payload.inventory_id}`);
+      setRentMsg(`Rented! inventory copy: ${payload.inventory_id}`);
 
       // refresh film details so inventory counts update
       await loadFilm();
     } catch (e) {
-      setRentMsg("❌ " + String(e.message || e));
+      setRentMsg(String(e.message || e));
     } finally {
       setRenting(false);
     }
