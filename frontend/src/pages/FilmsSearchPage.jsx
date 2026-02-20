@@ -41,7 +41,7 @@ export default function FilmsSearchPage() {
 }, [q]);
 
   return (
-    <div style={{ padding: 20, fontFamily: "Arial" }}>
+    <div style={{ padding: 20, maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
       <h1>Search</h1>
 
       <input
@@ -54,7 +54,7 @@ export default function FilmsSearchPage() {
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <div style={{ marginTop: 20 }}>
+      <div style={{ padding: 20, maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
         {results.map((f) => (
           <div key={f.film_id} style={{ marginBottom: 8 }}>
             <Link to={`/films/${f.film_id}`} style={{ color: "white" }}>

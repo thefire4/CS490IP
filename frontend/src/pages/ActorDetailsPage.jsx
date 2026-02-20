@@ -18,7 +18,7 @@ export default function ActorDetailsPage() {
   if (!data) return <p>Loading...</p>;
 
   return (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: 20, maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
       <h1>{data.actor.first_name} {data.actor.last_name}</h1>
       
         <h2>Top 5 Films:</h2>

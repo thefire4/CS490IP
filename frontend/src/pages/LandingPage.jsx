@@ -23,7 +23,7 @@ export default function App() {
   }, []);
 
   return (
-    <div style={{ padding: 20, fontFamily: "Arial" }}>
+    <div style={{ padding: 20, maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
       <title>Movie Store</title>
       <h1>Top 5 Rented Films</h1>
       {films.map((f) => (

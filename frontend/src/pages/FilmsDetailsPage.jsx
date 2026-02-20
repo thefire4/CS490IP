@@ -58,7 +58,7 @@ export default function FilmsDetailsPage() {
   if (!data) return <p>Loading...</p>;
 
   return (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: 20, maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
       <h1>{data.film.title}</h1>
       <p>{data.film.description}</p>
       <p>Rating: {data.film.rating}</p>
