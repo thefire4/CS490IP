@@ -17,7 +17,7 @@ def get_conn():
         database=os.getenv("DB_NAME")
     )
 
-# Test route
+
 @app.route("/api/health")
 def health():
     conn = get_conn()
@@ -28,7 +28,6 @@ def health():
     conn.close()
     return jsonify({"status": "ok", "db": result[0]})
 
-# Feature 1: Top 5 films
 @app.route("/api/landing/top-films")
 def top_films():
     conn = get_conn()
@@ -50,7 +49,6 @@ def top_films():
 
     return jsonify(rows)
 
-#Feature 2: Top 5 actors
 @app.route("/api/landing/top-actors")
 def top_actors():
     conn = get_conn()
@@ -116,15 +114,36 @@ def film_details(film_id):
     """, (film_id,))
     categories = cur.fetchall()
 
+    cur.execute("""
+        select
+        count(i.inventory_id) as total_copies,
+        sum(case when r.return_date is null and r.rental_id is not null then 1 else 0 end) as rented_out
+        from inventory i
+        left join rental r
+        on r.inventory_id = i.inventory_id
+        and r.return_date is null
+        where i.film_id = %s;
+    """, (film_id,))
+    stock = cur.fetchone()
+
+    total = stock["total_copies"] or 0
+    rented_out = stock["rented_out"] or 0
+    available = total - rented_out
+
     cur.close()
     conn.close()
 
     if film:
         return jsonify({
-            "film": film,
-            "actors": actors,
-            "categories": categories
-        })
+    "film": film,
+    "actors": actors,
+    "categories": categories,
+    "stock": {
+        "total_copies": total,
+        "rented_out": rented_out,
+        "available_copies": available
+    }
+})
     else:
         return jsonify({"error": "Film not found"}), 404
     
@@ -207,7 +226,78 @@ def search_films():
 
     return jsonify(rows)
 
+@app.route("/api/films/<int:film_id>/rent", methods=["POST"])
+def rent_film(film_id):
+    body = request.get_json(silent=True) or {}
+    customer_id = body.get("customer_id")
 
+    if not customer_id:
+        return jsonify({"error": "customer_id is required"}), 400
+
+    conn = get_conn()
+    cur = conn.cursor(dictionary=True, buffered=True)
+
+    # 1) does the film exist?
+    cur.execute("""
+        select film_id, title
+        from film
+        where film_id = %s
+    """, (film_id,))
+    film = cur.fetchone()
+    if film is None:
+        cur.close(); conn.close()
+        return jsonify({"error": "film not found"}), 404
+
+    # 2) does the customer exist?
+    cur.execute("""
+        select customer_id
+        from customer
+        where customer_id = %s
+    """, (customer_id,))
+    cust = cur.fetchone()
+    if cust is None:
+        cur.close(); conn.close()
+        return jsonify({"error": "customer not found"}), 404
+
+    # 3) find one available inventory copy (not currently rented out)
+    cur.execute("""
+        select i.inventory_id
+        from inventory i
+        left join rental r
+            on r.inventory_id = i.inventory_id
+            and r.return_date is null
+        where i.film_id = %s
+          and r.rental_id is null
+        order by i.inventory_id
+        limit 1
+    """, (film_id,))
+    inv = cur.fetchone()
+
+    if inv is None:
+        cur.close(); conn.close()
+        return jsonify({"error": "no copies available"}), 409
+
+    inventory_id = inv["inventory_id"]
+
+    # 4) create the rental
+    # NOTE: staff_id is required in sakila.rental; use 1 unless your project says otherwise
+    cur.execute("""
+        insert into rental (rental_date, inventory_id, customer_id, staff_id)
+        values (now(), %s, %s, 1)
+    """, (inventory_id, customer_id))
+    conn.commit()
+
+    rental_id = cur.lastrowid
+
+    cur.close()
+    conn.close()
+
+    return jsonify({
+        "message": "rented",
+        "film_id": film_id,
+        "inventory_id": inventory_id,
+        "rental_id": rental_id
+    }), 201
 
 
 

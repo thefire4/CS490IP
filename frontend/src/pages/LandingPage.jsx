@@ -24,8 +24,7 @@ export default function App() {
 
   return (
     <div style={{ padding: 20, fontFamily: "Arial" }}>
-      <Link to="/films-search" style={{ color: "white" }}>Go to films search</Link>
-      
+      <title>Movie Store</title>
       <h1>Top 5 Rented Films</h1>
       {films.map((f) => (
         <div key={f.film_id}>

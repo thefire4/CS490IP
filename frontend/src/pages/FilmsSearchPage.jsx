@@ -42,7 +42,7 @@ export default function FilmsSearchPage() {
 
   return (
     <div style={{ padding: 20, fontFamily: "Arial" }}>
-      <h1>film search</h1>
+      <h1>Search</h1>
 
       <input
         value={q}
