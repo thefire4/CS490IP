@@ -399,6 +399,8 @@ def delete_customer(customer_id):
     cur = conn.cursor(dictionary=True)
 
     try:
+        cur.execute("DELETE FROM payment WHERE customer_id = %s;", (customer_id,))
+        cur.execute("DELETE FROM rental WHERE customer_id = %s;", (customer_id,))
         cur.execute("DELETE FROM customer WHERE customer_id = %s;", (customer_id,))
         conn.commit()
         return jsonify({"status": "ok"})
