@@ -5,6 +5,8 @@ import FilmDetailsPage from "./pages/FilmsDetailsPage";
 import ActorDetailsPage from "./pages/ActorDetailsPage";
 import FilmsSearchPage from "./pages/FilmsSearchPage";
 import Navbar from "./components/NavBar";
+import CustomersPage from "./pages/CustomersPage";
+import CustomerDetailsPage from "./pages/CustomerDetailsPage";
 
 export default function App() {
   return (
@@ -18,6 +20,8 @@ export default function App() {
       <Route path="/actors/:actorID" element={<ActorDetailsPage />} />
 
       <Route path="/films-search" element={<FilmsSearchPage />} />
+      <Route path="/customers" element={<CustomersPage />} />
+      <Route path="/customers/:customerID" element={<CustomerDetailsPage />} />
     </Routes>
     </div>
     </>

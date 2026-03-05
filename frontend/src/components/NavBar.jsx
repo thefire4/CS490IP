@@ -19,6 +19,10 @@ export default function Navbar() {
       <Link to="/" style={{ color: "white", textDecoration: "none" }}>
         Home
       </Link>
+
+      <Link to="/customers" style={{ color: "white", textDecoration: "none" }}>
+        Customers
+      </Link>
     </div>
   );
 }
